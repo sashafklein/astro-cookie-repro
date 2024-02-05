@@ -1,47 +1,47 @@
-# Astro Starter Kit: Minimal
+# Astro repro
 
-```sh
-npm create astro@latest -- --template minimal
+Minimal repro for two issues listed on Astro:
+
+- [Cookies don't seem to persist across Netlify-adapted server endpoints](https://github.com/withastro/astro/issues/9978)
+- [Base path not inferred](https://github.com/withastro/astro/issues/9979)
+
+## First one - cookie permanence across endpoints
+
+As you can see from the below logs, only the "set-cookie" endpoint has access to the cookie being set. The "get-cookie" endpoint retreives nothing:
+
+```
+SETTING 1707094290227
+GETTING 1707094502379
+18:55:02 [302] POST /api/set-cookie 1ms
+TOKEN FROM COOKIE undefined
+18:55:02 [200] /api/get-cookie 0ms
+18:55:02 [200] / 5ms
+SETTING 1707094502379
+GETTING 1707094504721
+18:55:04 [302] POST /api/set-cookie 2ms
+TOKEN FROM COOKIE undefined
+18:55:04 [200] /api/get-cookie 1ms
+18:55:04 [200] / 9ms
+TOKEN FROM COOKIE undefined
+18:55:18 [200] /api/get-cookie 1ms
+18:55:18 [200] / 13ms
+SETTING 1707094504721
+GETTING 1707094533529
+18:55:33 [302] POST /api/set-cookie 1ms
+TOKEN FROM COOKIE undefined
+18:55:33 [200] /api/get-cookie 1ms
+18:55:33 [200] / 17ms
+TOKEN FROM COOKIE undefined
+18:55:35 [200] /api/get-cookie 5ms
+18:55:35 [200] / 20ms
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+## Second one - no implicit base url
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+If you remove "http://localhost:4321` from any of the URLs (the fetch and form submission on the index page, and the redirect in the set-cookie endpoint), it throws the same error:
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```
+18:54:41 [ERROR] Failed to parse URL from 
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+This seems troublesome to me, as I eventually want to push my app into production, and have it know the base URL. It's also cumbersome to just type it all out.
