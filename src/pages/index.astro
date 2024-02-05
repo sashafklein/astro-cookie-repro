@@ -1,0 +1,19 @@
+---
+await fetch("http://localhost:4321/api/get-cookie");
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
+    <h1>Cookie demo</h1>
+    <form action="http://localhost:4321/api/set-cookie" method="post">
+      <button>Set cookie to current timestamp</button>
+    </form>
+  </body>
+</html>
